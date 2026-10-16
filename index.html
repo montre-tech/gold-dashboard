@@ -7,39 +7,40 @@
   <meta name="theme-color" content="#1a1a2e">
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: #f2f2f2;
+      margin: 0; padding: 0; height: 100%;
+      overflow: hidden; background: #f2f2f2;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    .wrap {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-    /* The negative top offset clips the Apps Script banner off the top of
-       the iframe. Adjust -52px if you see a sliver of the banner or the top
-       of your hero is cut. */
+    .wrap { position: relative; width: 100%; height: 100vh; overflow: hidden; }
     .wrap iframe {
-      position: absolute;
-      top: -52px;
-      left: 0;
-      width: 100%;
-      height: calc(100vh + 52px);
-      border: 0;
-      background: #ffffff;
+      position: absolute; top: -52px; left: 0;
+      width: 100%; height: calc(100vh + 52px);
+      border: 0; background: #ffffff;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <iframe
+    <iframe id="app-frame"
       src="https://script.google.com/macros/s/AKfycbw5y62hhKJi93whytk8xNV9tj_ZJGEh1BBiRz5Wm4sklDqa0fE0lYYZP1mDhJjJtOPvGw/exec"
       allow="clipboard-read; clipboard-write"
       referrerpolicy="no-referrer"></iframe>
   </div>
+
+  <script>
+    var APP_URL = 'https://script.google.com/macros/s/AKfycbw5y62hhKJi93whytk8xNV9tj_ZJGEh1BBiRz5Wm4sklDqa0fE0lYYZP1mDhJjJtOPvGw/exec';
+
+    window.addEventListener('message', function(event) {
+      // Validate the message comes from our Apps Script deployment.
+      if (event.origin !== 'https://script.google.com' &&
+          event.origin.indexOf('script.googleusercontent.com') === -1) {
+        return;
+      }
+      if (event.data && event.data.type === 'navigate' && event.data.page) {
+        var frame = document.getElementById('app-frame');
+        frame.src = APP_URL + '?page=' + encodeURIComponent(event.data.page);
+      }
+    });
+  </script>
 </body>
 </html>
